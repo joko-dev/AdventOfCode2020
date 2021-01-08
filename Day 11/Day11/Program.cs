@@ -55,11 +55,11 @@ namespace Day11
             char newSeatType = currentSeat;
             int toleranceSeats = adjacentSeats ? 4 : 5;
 
-            if (currentSeat == EMPTY && countOccupiedAdjacent(seatMatrix, x, y) == 0)
+            if (currentSeat == EMPTY && countOccupiedAdjacent(seatMatrix, x, y, adjacentSeats) == 0)
             {
                 newSeatType = OCC;
             }
-            else if (currentSeat == OCC && countOccupiedAdjacent(seatMatrix, x, y) >= toleranceSeats)
+            else if (currentSeat == OCC && countOccupiedAdjacent(seatMatrix, x, y, adjacentSeats) >= toleranceSeats)
             {
                 newSeatType = EMPTY;
             }
@@ -67,28 +67,18 @@ namespace Day11
             return newSeatType;
         }
 
-        private static int countOccupiedAdjacent(List<string> seatMatrix, int x, int y)
+        private static int countOccupiedAdjacent(List<string> seatMatrix, int x, int y, bool adjacentSeats)
         {
             int count = 0;
-            string seatLine;
 
-            for (int i = x - 1; i <= x + 1; i++)
-            {
-                for (int j = y - 1; j <= y + 1; j++)
-                {
-                    if (!((j == y) && (i == x)) && (j >= 0) && (j < seatMatrix.Count))
-                    {
-                        seatLine = seatMatrix[j];
-                        if (i >= 0 && i < seatLine.Length)
-                        {
-                            if(seatLine[i] == OCC)
-                            {
-                                count++;
-                            }
-                        }
-                    }
-                }
-            }
+            count = isNextSeatOccupied(seatMatrix, x, y, -1, -1, adjacentSeats) ? count + 1 : count;
+            count = isNextSeatOccupied(seatMatrix, x, y, 0, -1, adjacentSeats) ? count + 1 : count;
+            count = isNextSeatOccupied(seatMatrix, x, y, 1, -1, adjacentSeats) ? count + 1 : count;
+            count = isNextSeatOccupied(seatMatrix, x, y, -1, 0, adjacentSeats) ? count + 1 : count;
+            count = isNextSeatOccupied(seatMatrix, x, y, 1, 0, adjacentSeats) ? count + 1: count;
+            count = isNextSeatOccupied(seatMatrix, x, y, -1, 1, adjacentSeats) ? count + 1: count;
+            count = isNextSeatOccupied(seatMatrix, x, y, 0, 1, adjacentSeats) ? count + 1: count;
+            count = isNextSeatOccupied(seatMatrix, x, y, 1, 1, adjacentSeats) ? count + 1: count;
 
             return count;
         }
@@ -98,13 +88,13 @@ namespace Day11
             bool occupied = false;
             bool searchNextSeat = true;
             string seatLine;
-            int newX;
-            int newY;
+            int newX = x;
+            int newY = y;
 
             while (searchNextSeat)
             {
-                newX = x + xToAdd;
-                newY = y + yToAdd;
+                newX = newX + xToAdd;
+                newY = newY + yToAdd;
 
                 if(newY >= 0 && newY < seatMatrix.Count)
                 {
@@ -123,6 +113,14 @@ namespace Day11
                             searchNextSeat = false;
                         }
                     }
+                    else
+                    {
+                        searchNextSeat = false;
+                    }
+                }
+                else
+                {
+                    searchNextSeat = false;
                 }
 
                 if (adjacentSeats)
