@@ -8,7 +8,8 @@ namespace Day12
     {
         static void Main(string[] args)
         {
-            Position currentPosition = new Position(0, 0, Direction.EAST);
+            Ship ship = new Ship(0, 0, Direction.EAST);
+            ShipWithWaypoint shipWithWaypoint = new ShipWithWaypoint(0,0,1,10);
 
             Console.WriteLine("Dirextion list:");
             string filepath = Console.ReadLine();
@@ -16,10 +17,12 @@ namespace Day12
 
             foreach (Direction direction in directions)
             {
-                currentPosition.Move(direction);
+                ship.Move(direction);
+                shipWithWaypoint.Move(direction);
             }
 
-            Console.WriteLine("Manhatten distance: {0}", currentPosition.getManhattanDistance());
+            Console.WriteLine("Manhatten distance: {0}", ship.Position.getManhattanDistance());
+            Console.WriteLine("Manhatten distance with waypoints: {0}", shipWithWaypoint.Position.getManhattanDistance());
         }
 
         private static List<Direction> GetDirectionPath(string filepath)
